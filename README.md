@@ -1,5 +1,5 @@
 # Wizards
-Repository for creating a "Wizards" 2-D game using [Slick2D](https://github.com/exovum/slickwizards/blob/master/README.md#resources)
+Repository for creating a "Wizards" 2-D game using [Slick2D] , a 2-D game library for the Java programming language.
 
 ### Summary
 
@@ -16,3 +16,5 @@ The "Wizards" game will be using the Slick2D java game library. It is a library 
 Another program that will be used is Tiled map editor.
 * [Main Page for Tiled] (http://www.mapeditor.org/)
 * [License for Tiled] (https://github.com/exovum/slickwizards/blob/master/LICENSE-Tiled)
+
+[Slick2d]: (https://github.com/exovum/slickwizards/blob/master/README.md#resources)
