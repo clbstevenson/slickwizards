@@ -13,6 +13,9 @@ The "Wizards" game will be using the Slick2D java game library. It is a library 
 * [Main Page for Slick2D] (http://slick.ninjacave.com/)
 * [Javadoc for Slick2D](http://slick.ninjacave.com/javadoc/)
 
+Another program that will be used is Tiled map editor.
+* [Main Page for Tiled] (http://www.mapeditor.org/)
+* [License for Tiled] (https://raw.githubusercontent.com/bjorn/tiled/master/LICENSE.GPL)
 ---
 
 Slick2D License
