@@ -1,5 +1,5 @@
 # Wizards
-Repository for creating a "Wizards" 2-D game using Slick2D
+Repository for creating a "Wizards" 2-D game using [Slick2D](https://github.com/exovum/slickwizards/blob/master/README.md#resources)
 
 ### Summary
 
@@ -8,10 +8,10 @@ Repository for creating a "Wizards" 2-D game using Slick2D
 ### Approximate Timeline
 
 ### Resources
-This will be using the Slick2D java game library. It is a library based on the lwjgl (light-weight java game library).
+The "Wizards" game will be using the Slick2D java game library. It is a library based on lwjgl (light-weight java game library).
 
-* Main Page for Slick2D: http://slick.ninjacave.com/
-* Javadoc for Slick2D: http://slick.ninjacave.com/javadoc/
+* [Main Page for Slick2D] (http://slick.ninjacave.com/)
+* [Javadoc for Slick2D](http://slick.ninjacave.com/javadoc/)
 
 ---
 
