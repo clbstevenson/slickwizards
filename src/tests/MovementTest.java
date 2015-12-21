@@ -14,7 +14,7 @@ import org.newdawn.slick.tiled.TiledMap;
 
 public class MovementTest extends BasicGame {
 
-	static String title = "Test Game - v1.0";
+	static String title = "Test Game - v1.2";
 
 	//TODO: also include the smallfont, and maybe more fonts too
 	AngelCodeFont font1;
