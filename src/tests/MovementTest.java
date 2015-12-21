@@ -1,5 +1,6 @@
 package tests;
 
+import org.newdawn.slick.AngelCodeFont;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
@@ -15,10 +16,10 @@ public class MovementTest extends BasicGame {
 
 	static String title = "Test Game - v1.0";
 
-	public MovementTest(String title) {
-		super(title);
-	}
-
+	//TODO: also include the smallfont, and maybe more fonts too
+	AngelCodeFont font1;
+	Input input;
+	
 	Image player;
 	Image map;
 	Image[] images;
@@ -36,10 +37,17 @@ public class MovementTest extends BasicGame {
 
 	Vector2f pos;
 	Vector2f mapPos;
+	
+	public MovementTest(String title) {
+		super(title);
+	}
 
 	@Override
 	public void init(GameContainer gc) throws SlickException {
-		// TODO Auto-generated method stub
+		input = gc.getInput();
+		
+		font1 = new AngelCodeFont("res/font1.fnt", "res/font1_0.tga");
+		
 		images = new Image[5];
 
 		moves = new SpriteSheet("res/tests_res/testMovement2.png", 32, 32);
@@ -77,10 +85,19 @@ public class MovementTest extends BasicGame {
 
 		g.drawString((int) mapID.x + ", " + (int) mapID.y, gc.getWidth() - 64,
 				32);
+		
+		font1.drawString(32, 32, "player: (" + pos.x + ", " +
+				pos.y + ")");
+
+		font1.drawString(32, 64, "part player: " + partPlayer(4, player));
+		
+		font1.drawString(32, 96, "tiledmap width: " + 
+				tiledMapArr[(int) mapID.x][(int) mapID.y].getWidth()
+				+ " * 32 = " + 
+				tiledMapArr[(int) mapID.x][(int) mapID.y].getWidth() * 32);
+		
 		// player.draw(pos.x, pos.y, 2.0f);
 	}
-
-	Input input;
 
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
@@ -100,13 +117,14 @@ public class MovementTest extends BasicGame {
 		// movementOne(input, delta);
 		// movementTwo(input, delta);
 		// 3: Moves the player around the map
-		moveThree(input, delta);
+		movePlayer(input, delta);
 		// 4: Moves the map around the player
 		// moveFour(input, delta);
 
 		input.clearKeyPressedRecord();
 	}
 
+	/*
 	private void movementOne(Input input, int delta) {
 		if (input.isKeyDown(Input.KEY_DOWN)) {
 			player = moves.getSprite(0, 1);
@@ -125,7 +143,9 @@ public class MovementTest extends BasicGame {
 			player = moves.getSprite(0, 0);
 		}
 	}
-
+	*/
+	
+	/*
 	private void movementTwo(Input input, int delta) {
 		if (input.isKeyDown(Input.KEY_UP)) {
 			player = moves.getSprite(3, 1);
@@ -140,13 +160,14 @@ public class MovementTest extends BasicGame {
 			player = moves.getSprite(0, 1);
 		}
 	}
-
+	*/
+	
 	/**
 	 * Moves the character around the map
 	 * @param input
 	 * @param delta
 	 */
-	private void moveThree(Input input, int delta) {
+	private void movePlayer(Input input, int delta) {
 		boolean moving = false;
 
 		// TODO: Diagonals?
@@ -160,11 +181,17 @@ public class MovementTest extends BasicGame {
 
 		if (input.isKeyDown(Input.KEY_RIGHT)) {
 			moving = true;
+			// if not moving, set the sprite to be moving
+			// I think this will improve efficiency slightly
+			//if (!moving)
+			// ^ did not work. 
+			// TODO: make movement efficient, so the player sprite is not
+			// 		re-set every loop
 			player = moves.getSprite(2, 1);
 			pos.x += spd * delta / 100;
 			if (pos.x + 3 * partPlayer(4, player) > tiledMapArr[(int) mapID.x][(int) mapID.y]
 					.getWidth() * 32 /* TODO: FIX */) {
-				if (mapID.x < tiledMapArr[0].length - 1) {
+				if (mapID.x < tiledMapArr.length - 1) {
 					mapID.x++;
 					pos.x = -(partPlayer(4, player));
 				} else {
