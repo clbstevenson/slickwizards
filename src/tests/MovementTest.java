@@ -323,9 +323,11 @@ public class MovementTest extends BasicGame {
 			player = moves.getSprite(0, 0);
 	}
 
+	/*
 	private int halfPlayer(Image player) {
 		return (player.getWidth() / 2);
 	}
+	*/
 
 	private int partPlayer(int parts, Image player) {
 		return (player.getWidth() / parts);
