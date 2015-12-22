@@ -188,7 +188,6 @@ public class MovementTest extends BasicGame {
 	 * @param delta
 	 */
 	private void movePlayer(Input input, int delta) {
-		boolean moving = false;
 
 		// TODO: Diagonals?
 		// TODO: check for boundaries
