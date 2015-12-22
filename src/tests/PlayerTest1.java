@@ -68,6 +68,23 @@ public class PlayerTest1 {
 		return (currImage.getWidth() / 4);
 	}
 	
+	private void setSpriteFromDirection(Direction d) {
+		switch(d) {
+		case RIGHT:
+			currImage = playerSheet.getSprite(2, 1);
+			break;
+		case LEFT:
+			currImage = playerSheet.getSprite(1, 1);
+			break;
+		case UP:
+			currImage = playerSheet.getSprite(3, 1);
+			break;
+		case DOWN:
+			currImage = playerSheet.getSprite(0, 1);
+			break;
+		}
+	}
+	
 	public void render(GameContainer gc, Graphics g) {
 		//TODO: Render images and animations
 		currImage.draw(pos.x, pos.y);
@@ -75,6 +92,8 @@ public class PlayerTest1 {
 	
 	public void update(GameContainer gc, Input input, int delta) {
 		//TODO: handle smooth movement of the player
+		// collisions are handled by the caller of this method
+		isMoving = false;
 		if (input.isKeyDown(Input.KEY_RIGHT)) {
 			isMoving = true;
 			// if not moving, set the sprite to be moving
@@ -83,35 +102,61 @@ public class PlayerTest1 {
 			// ^ did not work. 
 			// TODO: make movement efficient, so the player sprite is not
 			// 		re-set every loop
-			currImage = playerSheet.getSprite(2, 1);
+			
+			//set the player's sprite to point right
+			//TODO: use animations
+			setSpriteFromDirection(Direction.RIGHT);
+			//move the player right
 			move(Direction.RIGHT, delta);
+		}
+		if (input.isKeyDown(Input.KEY_LEFT)) {
+			isMoving = true;
+			//set the player's sprite to point left
+			setSpriteFromDirection(Direction.LEFT);
+			//move the player left
+			move(Direction.LEFT, delta);
+		}
+		if (input.isKeyDown(Input.KEY_UP)) {
+			isMoving = true;
+			//set the player's sprite to point up
+			setSpriteFromDirection(Direction.UP);
+			//move the player up
+			move(Direction.UP, delta);
+		}
+		if (input.isKeyDown(Input.KEY_DOWN)) {
+			isMoving = true;
+			//set the player's sprite to point down
+			setSpriteFromDirection(Direction.DOWN);
+			//move the player down
+			move(Direction.DOWN, delta);
 		}
 		if(!isMoving)
 			currImage = playerSheet.getSprite(0, 0);
 	}
 	
 	protected void move(Direction dir, int delta) {
+		System.out.println("ratio = " + (speed + delta) / 100.0f);
 		switch(dir) {
 		case RIGHT:
 			//move right
-			System.out.println("move right");
 			//pos.x += speed * delta / 100;
-			pos.x += speed * (delta / 100.0f);
+			pos.x += (speed + delta) / 100.0f;
+			//pos.x += speed * (delta / 100.0f);
 			break;
 		case LEFT:
 			//move left
-			System.out.println("move left");
-			pos.x -= speed * (delta / 100.0f);
+			//pos.x -= speed * (delta / 100.0f);
+			pos.x -= (speed + delta) / 100.0f;
 			break;
 		case UP:
 			//move up
-			System.out.println("move up");
-			pos.y -= speed * (delta / 100.0f);
+			//pos.y -= speed * (delta / 100.0f);
+			pos.y -= (speed + delta) / 100.0f;
 			break;
 		case DOWN:
 			//move down
-			System.out.println("move down");
-			pos.y += speed * (delta / 100.0f);
+			//pos.y += speed * (delta / 100.0f);
+			pos.y += (speed + delta) / 100.0f;
 			break;
 		}
 	}
