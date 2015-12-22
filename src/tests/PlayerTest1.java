@@ -12,7 +12,7 @@ import org.newdawn.slick.geom.Vector2f;
 public class PlayerTest1 {
 	
 	protected enum Direction {
-		RIGHT, LEFT, UP, DOWN
+		NONE, RIGHT, LEFT, UP, DOWN
 	}
 	
 	private Vector2f pos;
@@ -70,6 +70,9 @@ public class PlayerTest1 {
 	
 	private void setSpriteFromDirection(Direction d) {
 		switch(d) {
+		case NONE:
+			currImage = playerSheet.getSprite(0,0);
+			break;
 		case RIGHT:
 			currImage = playerSheet.getSprite(2, 1);
 			break;
@@ -90,12 +93,17 @@ public class PlayerTest1 {
 		currImage.draw(pos.x, pos.y);
 	}
 	
-	public void update(GameContainer gc, Input input, int delta) {
+	public void update(Direction dir, GameContainer gc, Input input, int delta) {
 		//TODO: handle smooth movement of the player
 		// collisions are handled by the caller of this method
-		isMoving = false;
+		//isMoving = false;
+		
+		setSpriteFromDirection(dir);
+		move(dir, delta);
+		
+		/*
 		if (input.isKeyDown(Input.KEY_RIGHT)) {
-			isMoving = true;
+			//isMoving = true;
 			// if not moving, set the sprite to be moving
 			// I think this will improve efficiency slightly
 			//if (!moving)
@@ -110,21 +118,21 @@ public class PlayerTest1 {
 			move(Direction.RIGHT, delta);
 		}
 		if (input.isKeyDown(Input.KEY_LEFT)) {
-			isMoving = true;
+			//isMoving = true;
 			//set the player's sprite to point left
 			setSpriteFromDirection(Direction.LEFT);
 			//move the player left
 			move(Direction.LEFT, delta);
 		}
 		if (input.isKeyDown(Input.KEY_UP)) {
-			isMoving = true;
+			//isMoving = true;
 			//set the player's sprite to point up
 			setSpriteFromDirection(Direction.UP);
 			//move the player up
 			move(Direction.UP, delta);
 		}
 		if (input.isKeyDown(Input.KEY_DOWN)) {
-			isMoving = true;
+			//isMoving = true;
 			//set the player's sprite to point down
 			setSpriteFromDirection(Direction.DOWN);
 			//move the player down
@@ -132,31 +140,35 @@ public class PlayerTest1 {
 		}
 		if(!isMoving)
 			currImage = playerSheet.getSprite(0, 0);
+		*/
 	}
 	
 	protected void move(Direction dir, int delta) {
-		System.out.println("ratio = " + (speed + delta) / 100.0f);
+		System.out.println("ratio = " + (speed + delta) / 10);
+		System.out.println("delta = " + delta);
 		switch(dir) {
 		case RIGHT:
 			//move right
 			//pos.x += speed * delta / 100;
-			pos.x += (speed + delta) / 100.0f;
-			//pos.x += speed * (delta / 100.0f);
+			pos.x += (speed + delta) / 10;
 			break;
 		case LEFT:
 			//move left
 			//pos.x -= speed * (delta / 100.0f);
-			pos.x -= (speed + delta) / 100.0f;
+			//pos.x -= (speed + delta) / 100.0f;
+			pos.x -= (speed + delta) / 10;
 			break;
 		case UP:
 			//move up
 			//pos.y -= speed * (delta / 100.0f);
-			pos.y -= (speed + delta) / 100.0f;
+			//pos.y -= (speed + delta) / 100.0f;
+			pos.y -= (speed + delta) / 10;
 			break;
 		case DOWN:
 			//move down
 			//pos.y += speed * (delta / 100.0f);
-			pos.y += (speed + delta) / 100.0f;
+			//pos.y += (speed + delta) / 100.0f;
+			pos.y += (speed + delta) / 10;
 			break;
 		}
 	}

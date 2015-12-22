@@ -25,6 +25,7 @@ public class MovementTest extends BasicGame {
 	//TODO: also include the smallfont, and maybe more fonts too
 	AngelCodeFont font1;
 	Input input;
+	int inputDelta;
 	
 	Image playerImage;
 	Image map;
@@ -53,6 +54,7 @@ public class MovementTest extends BasicGame {
 	public void init(GameContainer gc) throws SlickException {
 		this.gc = gc;
 		input = gc.getInput();
+		inputDelta = 1000;
 		
 		font1 = new AngelCodeFont("res/font1.fnt", "res/font1_0.tga");
 		
@@ -118,6 +120,7 @@ public class MovementTest extends BasicGame {
 		// TODO Auto-generated method stub
 
 		input = gc.getInput();
+		inputDelta -= delta;
 
 		if (input.isKeyPressed(Input.KEY_ESCAPE)) {
 			gc.exit();
@@ -131,7 +134,10 @@ public class MovementTest extends BasicGame {
 		// movementOne(input, delta);
 		// movementTwo(input, delta);
 		// 3: Moves the player around the map
-		movePlayer(input, delta);
+		if(inputDelta < 0) {
+			movePlayer(input, delta);
+			inputDelta = 25;
+		}
 		// 4: Moves the map around the player
 		// moveFour(input, delta);
 
@@ -192,12 +198,18 @@ public class MovementTest extends BasicGame {
 		if (input.isKeyDown(Input.KEY_LSHIFT)) {
 			spd *= 3;
 		}
+		
+		player.isMoving = false;
+		//update the player's position and image/animation
 
 		if (input.isKeyDown(Input.KEY_RIGHT)) {
-			moving = true;
+			//moving = true;
+			player.isMoving = true;
+			player.update(Direction.RIGHT, gc, input, delta);
 			//update the player's position and image/animation
-			player.update(gc, input, delta);
+			//player.update(gc, input, delta);
 			//pos.x += spd * delta / 100;
+			
 			// check if the player collides with the right "wall"
 			if(player.getPos().x + 3 * player.getOffset() > 
 					tiledMapArr[(int)mapID.x][(int) mapID.y].getWidth() * TILE_SIZE) {
@@ -215,9 +227,8 @@ public class MovementTest extends BasicGame {
 					
 		}
 		if (input.isKeyDown(Input.KEY_LEFT)) {
-			moving = true;
-			//update the player's position and image/animation
-			player.update(gc, input, delta);
+			player.isMoving = true;
+			player.update(Direction.LEFT, gc, input, delta);
 			//check if the player collided with the left "wall"
 			if(player.getX() + player.getOffset() <= 0) {
 				if(mapID.x > 0) {
@@ -243,9 +254,8 @@ public class MovementTest extends BasicGame {
 			*/
 		}
 		if (input.isKeyDown(Input.KEY_UP)) {
-			moving = true;
-			//update the player's position and image/animation
-			player.update(gc, input, delta);
+			player.isMoving = true;
+			player.update(Direction.UP, gc, input, delta);
 			//check if the player collided with the top "wall"
 			if(player.getY() + player.getOffset() <= 0) {
 				if (mapID.y > 0) {
@@ -274,9 +284,8 @@ public class MovementTest extends BasicGame {
 			*/
 		}
 		if (input.isKeyDown(Input.KEY_DOWN)) {
-			moving = true;
-			//update the player's position and image/animation
-			player.update(gc, input, delta);
+			player.isMoving = true;
+			player.update(Direction.DOWN, gc, input, delta);
 			//check if the player collided with the bottom "wall"
 			if(player.getY() + 3 * player.getOffset() > 
 					tiledMapArr[(int)mapID.x][(int)mapID.y].getHeight() * TILE_SIZE) {
@@ -301,8 +310,8 @@ public class MovementTest extends BasicGame {
 			*/
 		}
 
-		if (!moving)
-			player.update(gc, input, delta);
+		if (!player.isMoving)
+			player.update(Direction.NONE, gc, input, delta);
 			//playerImage = moves.getSprite(0, 0);
 
 	}
