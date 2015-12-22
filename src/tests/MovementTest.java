@@ -12,7 +12,7 @@ import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.tiled.TiledMap;
 
-import tests.PlayerTest1.Direction;
+import tests.PlayerTest.Direction;
 
 public class MovementTest extends BasicGame {
 
@@ -44,7 +44,7 @@ public class MovementTest extends BasicGame {
 	Vector2f pos;
 	Vector2f mapPos;
 	
-	PlayerTest1 player;
+	PlayerTest player;
 	
 	public MovementTest(String title) {
 		super(title);
@@ -84,7 +84,7 @@ public class MovementTest extends BasicGame {
 		pos = new Vector2f(x, y);
 		mapPos = new Vector2f(0, 0);
 		
-		player = new PlayerTest1(pos, playerImage);
+		player = new PlayerTest(pos, playerImage);
 	}
 
 	@Override
