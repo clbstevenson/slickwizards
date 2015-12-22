@@ -12,15 +12,20 @@ import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.tiled.TiledMap;
 
+import tests.PlayerTest1.Direction;
+
 public class MovementTest extends BasicGame {
 
-	static String title = "Test Game - v1.2";
+	private static String title = "Test Game - v1.2";
+	private static int TILE_SIZE = 32;
+	
+	private GameContainer gc;
 
 	//TODO: also include the smallfont, and maybe more fonts too
 	AngelCodeFont font1;
 	Input input;
 	
-	Image player;
+	Image playerImage;
 	Image map;
 	Image[] images;
 	SpriteSheet moves;
@@ -34,9 +39,10 @@ public class MovementTest extends BasicGame {
 	// TODO: Make the 2D array hold TilED maps
 	TiledMap[][] tiledMapArr;
 	Vector2f mapID;
-
 	Vector2f pos;
 	Vector2f mapPos;
+	
+	PlayerTest1 player;
 	
 	public MovementTest(String title) {
 		super(title);
@@ -44,14 +50,16 @@ public class MovementTest extends BasicGame {
 
 	@Override
 	public void init(GameContainer gc) throws SlickException {
+		this.gc = gc;
 		input = gc.getInput();
 		
 		font1 = new AngelCodeFont("res/font1.fnt", "res/font1_0.tga");
 		
 		images = new Image[5];
 
-		moves = new SpriteSheet("res/tests_res/testMovement2.png", 32, 32);
-		player = moves.getSprite(0, 0);
+		moves = new SpriteSheet("res/tests_res/testMovement2.png", 
+				TILE_SIZE, TILE_SIZE);
+		playerImage = moves.getSprite(0, 0);
 		map = new Image("res/tests_res/testMap1.png");
 
 		mapID = new Vector2f(0, 1);
@@ -68,10 +76,12 @@ public class MovementTest extends BasicGame {
 		tiledMapArr[0][1] = new TiledMap("res/tests_res/map0-1.tmx");
 		tiledMapArr[0][2] = new TiledMap("res/tests_res/map0-2.tmx");
 
-		int x = (gc.getWidth() / 2) - (player.getWidth() / 2);
-		int y = (gc.getHeight() / 2) - (player.getHeight() / 2);
+		int x = (gc.getWidth() / 2) - (playerImage.getWidth() / 2);
+		int y = (gc.getHeight() / 2) - (playerImage.getHeight() / 2);
 		pos = new Vector2f(x, y);
 		mapPos = new Vector2f(0, 0);
+		
+		player = new PlayerTest1(pos, playerImage);
 	}
 
 	@Override
@@ -81,20 +91,23 @@ public class MovementTest extends BasicGame {
 		// mapFrames[(int) mapID.x][(int) mapID.y].draw(0, 0);
 		tiledMapArr[(int) mapID.x][(int) mapID.y].render(0, 0);
 
-		player.draw(pos.x, pos.y);
+		playerImage.draw(pos.x, pos.y);
 
 		g.drawString((int) mapID.x + ", " + (int) mapID.y, gc.getWidth() - 64,
 				32);
 		
-		font1.drawString(32, 32, "player: (" + pos.x + ", " +
-				pos.y + ")");
+		font1.drawString(32, 32, "player: (" + player.getX() + ", " +
+				player.getY() + ")");
 
-		font1.drawString(32, 64, "part player: " + partPlayer(4, player));
+		//font1.drawString(32, 64, "part player: " + partPlayer(4, playerImage));
+		font1.drawString(32,64, "player offset: " + player.getOffset());
 		
 		font1.drawString(32, 96, "tiledmap width: " + 
 				tiledMapArr[(int) mapID.x][(int) mapID.y].getWidth()
 				+ " * 32 = " + 
 				tiledMapArr[(int) mapID.x][(int) mapID.y].getWidth() * 32);
+		
+		player.render(gc, g);
 		
 		// player.draw(pos.x, pos.y, 2.0f);
 	}
@@ -181,109 +194,71 @@ public class MovementTest extends BasicGame {
 
 		if (input.isKeyDown(Input.KEY_RIGHT)) {
 			moving = true;
-			// if not moving, set the sprite to be moving
-			// I think this will improve efficiency slightly
-			//if (!moving)
-			// ^ did not work. 
-			// TODO: make movement efficient, so the player sprite is not
-			// 		re-set every loop
-			player = moves.getSprite(2, 1);
-			pos.x += spd * delta / 100;
-			if (pos.x + 3 * partPlayer(4, player) > tiledMapArr[(int) mapID.x][(int) mapID.y]
-					.getWidth() * 32 /* TODO: FIX */) {
+			//update the player's position and image/animation
+			player.update(gc, input, delta);
+			//pos.x += spd * delta / 100;
+			// check if the player collides with the right "wall"
+			if(player.getPos().x + player.getOffset() > 
+			  tiledMapArr[(int)mapID.x][(int) mapID.y].getWidth() * TILE_SIZE) {
+				//if there are more map screens to the right, change map
 				if (mapID.x < tiledMapArr.length - 1) {
 					mapID.x++;
-					pos.x = -(partPlayer(4, player));
+					//pos.x = -(partPlayer(4, playerImage));
+					player.setX(-(partPlayer(4, playerImage)));
 				} else {
-					pos.x -= spd * delta / 100;
+					//no more maps to the right, so collide & stay on screen
+					//pos.x -= spd * delta / 100;
+					player.move(Direction.LEFT, delta);
 				}
 			}
-			// if (pos.x + 3 * partPlayer(4, player) > mapFrames[(int)
-			// mapID.x][(int) mapID.y]
-			// .getWidth()) {
-			// if (mapID.x < mapFrames[0].length - 1) {
-			// mapID.x++;
-			// pos.x = -(partPlayer(4, player));
-			// } else {
-			// pos.x -= spd * delta / 100;
-			// }
-			// }
+					
 		}
 		if (input.isKeyDown(Input.KEY_LEFT)) {
 			moving = true;
-			player = moves.getSprite(1, 1);
+			playerImage = moves.getSprite(1, 1);
 			pos.x -= spd * delta / 100;
-			if (pos.x + partPlayer(4, player) <= 0) {
+			if (pos.x + partPlayer(4, playerImage) <= 0) {
 				if (mapID.x > 0) {
 					mapID.x--;
 					pos.x = tiledMapArr[(int) mapID.x][(int) mapID.y]
-							.getWidth() - 3 * (partPlayer(4, player));
+							.getWidth() - 3 * (partPlayer(4, playerImage));
 				} else {
 					pos.x += spd * delta / 100;
 				}
 			}
-			// if (pos.x + partPlayer(4, player) <= 0) {
-			// if (mapID.x > 0) {
-			// mapID.x--;
-			// pos.x = mapFrames[(int) mapID.x][(int) mapID.y]
-			// .getWidth() - 3 * (partPlayer(4, player));
-			// } else {
-			// pos.x += spd * delta / 100;
-			// }
-			// }
 		}
 		if (input.isKeyDown(Input.KEY_UP)) {
 			moving = true;
-			player = moves.getSprite(3, 1);
+			playerImage = moves.getSprite(3, 1);
 			pos.y -= spd * delta / 100;
-			if (pos.y + partPlayer(4, player) <= 0) {
+			if (pos.y + partPlayer(4, playerImage) <= 0) {
 				if (mapID.y > 0) {
 					mapID.y--;
 					pos.y = tiledMapArr[(int) mapID.x][(int) mapID.y]
 							.getHeight() * 32 /* TODO: FIX */
-							- 3 * (partPlayer(4, player));
+							- 3 * (partPlayer(4, playerImage));
 				} else {
 					pos.y += spd * delta / 100;
 				}
 			}
-
-			// if (pos.y + partPlayer(4, player) <= 0) {
-			// if (mapID.y > 0) {
-			// mapID.y--;
-			// pos.y = mapFrames[(int) mapID.x][(int) mapID.y]
-			// .getHeight() - 3 * (partPlayer(4, player));
-			// } else {
-			// pos.y += spd * delta / 100;
-			// }
-			// }
 		}
 		if (input.isKeyDown(Input.KEY_DOWN)) {
 			moving = true;
-			player = moves.getSprite(0, 1);
+			playerImage = moves.getSprite(0, 1);
 			pos.y += spd * delta / 100;
-			if (pos.y + 3 * partPlayer(4, player) > tiledMapArr[(int) mapID.x][(int) mapID.y]
+			if (pos.y + 3 * partPlayer(4, playerImage) > tiledMapArr[(int) mapID.x][(int) mapID.y]
 					.getHeight() * 32 /* TODO: FIX */) {
 				if (mapID.y < tiledMapArr[0].length - 1) {
 					mapID.y++;
-					pos.y = -(partPlayer(4, player));
+					pos.y = -(partPlayer(4, playerImage));
 				} else {
 					pos.y -= spd * delta / 100;
 				}
 			}
-			// if (pos.y + 3 * partPlayer(4, player) > mapFrames[(int)
-			// mapID.x][(int) mapID.y]
-			// .getHeight()) {
-			// if (mapID.y < mapFrames[0].length - 1) {
-			// mapID.y++;
-			// pos.y = -(partPlayer(4, player));
-			// } else {
-			// pos.y -= spd * delta / 100;
-			// }
-			// }
 		}
 
 		if (!moving)
-			player = moves.getSprite(0, 0);
+			playerImage = moves.getSprite(0, 0);
 
 	}
 
@@ -298,29 +273,29 @@ public class MovementTest extends BasicGame {
 		int spd = 10;
 
 		if (input.isKeyDown(Input.KEY_RIGHT)) {
-			player = moves.getSprite(2, 1);
+			playerImage = moves.getSprite(2, 1);
 			mapPos.x -= spd * delta / 100;
 			moving = true;
 		}
 		if (input.isKeyDown(Input.KEY_LEFT)) {
-			player = moves.getSprite(1, 1);
+			playerImage = moves.getSprite(1, 1);
 			mapPos.x += spd * delta / 100;
 			moving = true;
 		}
 		if (input.isKeyDown(Input.KEY_UP)) {
-			player = moves.getSprite(3, 1);
+			playerImage = moves.getSprite(3, 1);
 			mapPos.y += spd * delta / 100;
 			moving = true;
 		}
 		if (input.isKeyDown(Input.KEY_DOWN)) {
-			player = moves.getSprite(0, 1);
+			playerImage = moves.getSprite(0, 1);
 
 			mapPos.y -= spd * delta / 100;
 			moving = true;
 		}
 
 		if (!moving)
-			player = moves.getSprite(0, 0);
+			playerImage = moves.getSprite(0, 0);
 	}
 
 	/*
