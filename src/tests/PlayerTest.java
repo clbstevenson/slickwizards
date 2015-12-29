@@ -9,7 +9,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Vector2f;
 
-public class PlayerTest1 {
+public class PlayerTest {
 	
 	protected enum Direction {
 		NONE, RIGHT, LEFT, UP, DOWN
@@ -24,11 +24,11 @@ public class PlayerTest1 {
 	
 	int speed;
 
-	public PlayerTest1(Image playerImage) throws SlickException{
+	public PlayerTest(Image playerImage) throws SlickException{
 		this(new Vector2f(0.0f, 0.0f), playerImage);
 	}
 	
-	public PlayerTest1(Vector2f initPos, Image playerImage) throws SlickException{
+	public PlayerTest(Vector2f initPos, Image playerImage) throws SlickException{
 		//pos.set(initPos);
 		pos = initPos;
 		currImage = playerImage;
