@@ -35,7 +35,7 @@ public class PlayerTest {
 		speed = 10;
 		isMoving = false;
 		
-		playerSheet = new SpriteSheet("res/tests_res/testMovement2.png", 
+		playerSheet = new SpriteSheet("testdata/testMovement2.png", 
 		  32, 32);
 		//TODO: add other attributes
 	}
@@ -144,8 +144,8 @@ public class PlayerTest {
 	}
 	
 	protected void move(Direction dir, int delta) {
-		System.out.println("ratio = " + (speed + delta) / 10);
-		System.out.println("delta = " + delta);
+		//System.out.println("ratio = " + (speed + delta) / 10);
+		//System.out.println("delta = " + delta);
 		switch(dir) {
 		case RIGHT:
 			//move right

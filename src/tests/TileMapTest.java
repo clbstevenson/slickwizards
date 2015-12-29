@@ -1,5 +1,7 @@
 //Note to self: if this file doesn't work, try a different package
-package org.newdawn.slick.tests;
+//package org.newdawn.slick.tests;
+//Update: Yup, package doesn't work. Changing it
+package tests;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;

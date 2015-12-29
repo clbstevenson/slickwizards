@@ -16,4 +16,12 @@
    eJxjYBgFtACMZMqNmjcyzRsFxAEAJZwADw==
   </data>
  </layer>
+ <objectgroup name="objectLayer" width="20" height="15">
+  <object x="193" y="128" width="32" height="224"/>
+  <object x="417" y="129" width="32" height="225"/>
+  <object x="228" y="128" width="74" height="33"/>
+  <object x="340" y="129" width="74" height="33"/>
+  <object x="342" y="322" width="74" height="33"/>
+  <object x="228" y="319" width="74" height="33"/>
+ </objectgroup>
 </map>

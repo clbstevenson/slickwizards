@@ -60,10 +60,10 @@ public class MovementTest extends BasicGame {
 		
 		images = new Image[5];
 
-		moves = new SpriteSheet("res/tests_res/testMovement2.png", 
+		moves = new SpriteSheet("testdata/testMovement2.png", 
 				TILE_SIZE, TILE_SIZE);
 		playerImage = moves.getSprite(0, 0);
-		map = new Image("res/tests_res/testMap1.png");
+		map = new Image("testdata/testMap1.png");
 
 		mapID = new Vector2f(0, 1);
 		mapFrames = new Image[3][3];
@@ -75,9 +75,9 @@ public class MovementTest extends BasicGame {
 
 		// TODO: Make a loop to initialize the Tiled maps
 		tiledMapArr = new TiledMap[1][3];
-		tiledMapArr[0][0] = new TiledMap("res/tests_res/map0-0.tmx");
-		tiledMapArr[0][1] = new TiledMap("res/tests_res/map0-1.tmx");
-		tiledMapArr[0][2] = new TiledMap("res/tests_res/map0-2.tmx");
+		tiledMapArr[0][0] = new TiledMap("testdata/map0-0.tmx");
+		tiledMapArr[0][1] = new TiledMap("testdata/map0-1.tmx");
+		tiledMapArr[0][2] = new TiledMap("testdata/map0-2.tmx");
 
 		int x = (gc.getWidth() / 2) - (playerImage.getWidth() / 2);
 		int y = (gc.getHeight() / 2) - (playerImage.getHeight() / 2);
