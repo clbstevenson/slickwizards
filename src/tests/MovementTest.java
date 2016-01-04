@@ -37,6 +37,7 @@ public class MovementTest extends BasicGame {
 	// > actually, "map" objects better so can interact different
 	// > for now: test with images
 
+	//TODO: remove *mapFrames* because it is not used anymore
 	Image[][] mapFrames;
 	// TODO: Make the 2D array hold TilED maps
 	TiledMap[][] tiledMapArr;
@@ -66,6 +67,7 @@ public class MovementTest extends BasicGame {
 		map = new Image("testdata/testMap1.png");
 
 		mapID = new Vector2f(0, 1);
+		//TODO: remove *mapFrames* because it is not used anymore
 		mapFrames = new Image[3][3];
 		for (int k = 0; k < mapFrames.length; k++) {
 			mapFrames[k][0] = map;
@@ -75,9 +77,9 @@ public class MovementTest extends BasicGame {
 
 		// TODO: Make a loop to initialize the Tiled maps
 		tiledMapArr = new TiledMap[1][3];
-		tiledMapArr[0][0] = new TiledMap("testdata/map0-0.tmx");
-		tiledMapArr[0][1] = new TiledMap("testdata/map0-1.tmx");
-		tiledMapArr[0][2] = new TiledMap("testdata/map0-2.tmx");
+		tiledMapArr[0][0] = new TiledMap("testdata/map0-0.tmx", "testdata");
+		tiledMapArr[0][1] = new TiledMap("testdata/map0-1.tmx", "testdata");
+		tiledMapArr[0][2] = new TiledMap("testdata/map0-2.tmx", "testdata");
 
 		int x = (gc.getWidth() / 2) - (playerImage.getWidth() / 2);
 		int y = (gc.getHeight() / 2) - (playerImage.getHeight() / 2);
@@ -204,6 +206,14 @@ public class MovementTest extends BasicGame {
 		if (input.isKeyDown(Input.KEY_RIGHT)) {
 			//moving = true;
 			player.isMoving = true;
+			//TODO: make this more efficient
+			/*
+			 * By updating/moving and THEN checking if player is out of bounds,
+			 * this is probably slowing things down. We should check first
+			 * for a valid movement, then when there is a problem two actions 
+			 * are not needed.
+			 * Again, it's a consideration to be made at some point
+			 */
 			player.update(Direction.RIGHT, gc, input, delta);
 			//update the player's position and image/animation
 			//player.update(gc, input, delta);
@@ -212,6 +222,17 @@ public class MovementTest extends BasicGame {
 			// check if the player collides with the right "wall"
 			if(player.getPos().x + 3 * player.getOffset() > 
 					tiledMapArr[(int)mapID.x][(int) mapID.y].getWidth() * TILE_SIZE) {
+				
+				//if there are more map screens to the right, change map
+				if(getNextMap(Direction.RIGHT)) {
+					player.setX(-(partPlayer(4, playerImage)));
+				} else {
+					//no more maps to the right, so collide & stay on screen
+					//pos.x -= spd * delta / 100;
+					player.move(Direction.LEFT, delta);
+				}
+				
+				/*
 				//if there are more map screens to the right, change map
 				if (mapID.x < tiledMapArr.length - 1) {
 					mapID.x++;
@@ -222,6 +243,7 @@ public class MovementTest extends BasicGame {
 					//pos.x -= spd * delta / 100;
 					player.move(Direction.LEFT, delta);
 				}
+				*/
 			}
 					
 		}
@@ -356,6 +378,39 @@ public class MovementTest extends BasicGame {
 		return (player.getWidth() / 2);
 	}
 	*/
+	
+	/*
+	 * This method will return true if there is a valid map to load based on 
+	 * the player's movement. If there is not a map or an error occurs 
+	 * (IndexOutOfBounds), then it will return false which will cause either
+	 * an error or (for testing purposes) and "Error Map" to load.
+	 * 
+	 * @return true if there is a valid map to load; false if there is an error
+	 */
+	private boolean getNextMap(Direction d) {
+		switch(d) {
+		case RIGHT:
+			if (mapID.x < tiledMapArr.length - 1) { 
+				mapID.x++;
+				return true;
+			}
+			//player is moving right
+			break;
+		case LEFT:
+			//player is moving left
+			break;
+		case UP:
+			//player is moving up
+			break;
+		case DOWN:
+			//player is moving down
+			break;
+		default:
+			//otherwise...what?
+			break;
+		}
+		return false;
+	}
 
 	private int partPlayer(int parts, Image player) {
 		return (player.getWidth() / parts);
