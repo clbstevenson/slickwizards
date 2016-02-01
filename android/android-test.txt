@@ -1,0 +1,2 @@
+This is a test file to setup the android directory.
+REMOVE THIS FILE.
