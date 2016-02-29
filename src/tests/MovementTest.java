@@ -13,6 +13,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Circle;
+import org.newdawn.slick.geom.Ellipse;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
@@ -129,6 +130,9 @@ public class MovementTest extends BasicGame {
 		// mapFrames[(int) mapID.x][(int) mapID.y].draw(0, 0);
 		tiledMapArr[(int) mapID.x][(int) mapID.y].render(0, 0);
 
+		for(Shape s : 
+				staticMapObjects.get(tiledMapArr[(int) mapID.x][(int) mapID.y]))
+			g.draw(s);
 		// playerImage.draw(pos.x, pos.y);
 
 		g.drawString((int) mapID.x + ", " + (int) mapID.y, gc.getWidth() - 64,
@@ -461,8 +465,10 @@ public class MovementTest extends BasicGame {
 						map.getObjectName(gid, oid), type);
 				// if type is "circle", make a Circle Shape
 				if (type.equals("circle")) {
-					mapObjects.add(new Circle(x + width / 2, y + height / 2,
-							width / 2));
+					//mapObjects.add(new Circle(x + width / 2, y + height / 2,
+					//		width / 2, 4));
+					mapObjects.add(new Ellipse(x + width / 2, y + height / 2, 
+							width / 2, height / 2));
 				} else {
 					// otherwise, assume it is a Rectangle shape
 					mapObjects.add(new Rectangle(x, y, width, height));

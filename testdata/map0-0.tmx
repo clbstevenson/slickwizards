@@ -6,9 +6,22 @@
  <tileset firstgid="2" name="testMap1" tilewidth="32" tileheight="32">
   <image source="testMap1.png" width="640" height="480"/>
  </tileset>
- <layer name="Tile Layer 1" width="20" height="15">
+ <layer name="baseLayer" width="20" height="15">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NiYGBgGsVUxYxomJA4MeaRwh41j/bmUTN+RzHxGAA3+yX6sAQAAA==
+   H4sIAAAAAAAAC2NiYGBgGsWjeBSP4iGAAdne9L6wBAAA
   </data>
  </layer>
+ <layer name="treeLayer" width="20" height="15">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NgGAXUBoxomJA4MeaRwh41j/bmUTN+RwHxAAAMq9GGsAQAAA==
+  </data>
+ </layer>
+ <objectgroup name="objectLayer1" width="20" height="15">
+  <object type="circle" x="160" y="128" width="128" height="224">
+   <ellipse/>
+  </object>
+  <object type="circle" x="352" y="128" width="128" height="224">
+   <ellipse/>
+  </object>
+ </objectgroup>
 </map>
