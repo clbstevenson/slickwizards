@@ -7,6 +7,8 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
+import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
 public class PlayerTest {
@@ -17,6 +19,7 @@ public class PlayerTest {
 	
 	private Vector2f pos;
 	
+	private Shape playerShape;
 	Image currImage;
 	SpriteSheet playerSheet;
 	Animation playerAnim;
@@ -34,6 +37,9 @@ public class PlayerTest {
 		currImage = playerImage;
 		speed = 10;
 		isMoving = false;
+		
+		playerShape = new Rectangle(pos.x, pos.y, 
+				playerImage.getWidth(), playerImage.getHeight());
 		
 		playerSheet = new SpriteSheet("testdata/testMovement2.png", 
 		  32, 32);
@@ -68,6 +74,10 @@ public class PlayerTest {
 		return (currImage.getWidth() / 4);
 	}
 	
+	public Shape getShape() {
+		return playerShape;
+	}
+	
 	private void setSpriteFromDirection(Direction d) {
 		switch(d) {
 		case NONE:
@@ -91,6 +101,7 @@ public class PlayerTest {
 	public void render(GameContainer gc, Graphics g) {
 		//TODO: Render images and animations
 		currImage.draw(pos.x, pos.y);
+		//g.draw(playerShape);
 	}
 	
 	public void update(Direction dir, GameContainer gc, Input input, int delta) {
@@ -171,6 +182,7 @@ public class PlayerTest {
 			pos.y += (speed + delta) / 10;
 			break;
 		}
+		playerShape.setLocation(pos);
 	}
 	
 }

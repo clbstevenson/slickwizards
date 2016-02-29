@@ -7,16 +7,16 @@
   <image source="testMap1.png" width="640" height="480"/>
  </tileset>
  <layer name="baseLayer" width="20" height="15">
-  <data encoding="base64" compression="zlib">
-   eJxjYmBgYBrFo3gUj+IhgAGH6wJZ
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NiYGBgGsWjeBSP4iGAAdne9L6wBAAA
   </data>
  </layer>
  <layer name="treeLayer" width="20" height="15">
-  <data encoding="base64" compression="zlib">
-   eJxjYBgFtACMZMqNmjcyzRsFxAEAJZwADw==
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NgGAW0AIxkyg2EeYxY+MPZPFLk6GXeKCAOAADY/TftsAQAAA==
   </data>
  </layer>
- <objectgroup name="objectLayer" width="20" height="15">
+ <objectgroup color="#ffaa00" name="objectLayer" width="20" height="15" opacity="0.9">
   <object x="193" y="128" width="32" height="224"/>
   <object x="417" y="129" width="32" height="225"/>
   <object x="228" y="128" width="74" height="33"/>
