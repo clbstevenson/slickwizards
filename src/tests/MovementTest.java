@@ -183,12 +183,19 @@ public class MovementTest extends BasicGame {
 			gc.setPaused(true);
 		}
 
-		//if press ESCAPE and the game is paused, then exit
-		if (input.isKeyPressed(Input.KEY_ESCAPE) && gc.isPaused()) {
-			gc.exit();
+		//if you press ESCAPE...
+		if (input.isKeyPressed(Input.KEY_ESCAPE) ){
+			//if the game is not paused, then open the pause menu
+			if(!gc.isPaused()) {
+				gc.setPaused(true);
+			} 
+			//otherwise, game is paused, so exit the game
+			else {
+				gc.exit();
+			}
 		}
 
-		//pause or unpause the game
+		//pause or un-pause the game
 		if (input.isKeyPressed(Input.KEY_P)) {
 			gc.setPaused(!gc.isPaused());
 		}
