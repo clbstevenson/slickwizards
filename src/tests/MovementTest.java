@@ -6,13 +6,13 @@ import java.util.HashMap;
 import org.newdawn.slick.AngelCodeFont;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
-import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Ellipse;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
@@ -106,12 +106,12 @@ public class MovementTest extends BasicGame {
 		}
 
 		// check that all of the objects have been loaded
-		for (TiledMap m : staticMapObjects.keySet()) {
-			for (Shape s : staticMapObjects.get(m)) {
-				// System.out.printf("Shape: (%f, %f)\n", s.getCenterX(),
-				// s.getCenterY());
-			}
-		}
+		// for (TiledMap m : staticMapObjects.keySet()) {
+		// for (Shape s : staticMapObjects.get(m)) {
+		// // System.out.printf("Shape: (%f, %f)\n", s.getCenterX(),
+		// // s.getCenterY());
+		// }
+		// }
 
 		// TiledMap map11 = new TiledMap("testdata/map1-1.tmx", "testdata");
 
@@ -130,8 +130,8 @@ public class MovementTest extends BasicGame {
 		// mapFrames[(int) mapID.x][(int) mapID.y].draw(0, 0);
 		tiledMapArr[(int) mapID.x][(int) mapID.y].render(0, 0);
 
-		for(Shape s : 
-				staticMapObjects.get(tiledMapArr[(int) mapID.x][(int) mapID.y]))
+		for (Shape s : staticMapObjects
+				.get(tiledMapArr[(int) mapID.x][(int) mapID.y]))
 			g.draw(s);
 		// playerImage.draw(pos.x, pos.y);
 
@@ -151,6 +151,22 @@ public class MovementTest extends BasicGame {
 				tiledMapArr[(int) mapID.x][(int) mapID.y].getWidth() * 32);
 
 		player.render(gc, g);
+		
+		//if paused, show a window or something
+		if(gc.isPaused()) {
+			Color c = new Color(0, 0, 0, 0.3f);
+			g.setColor(c);
+			g.fillRect(0, 0, gc.getWidth(), gc.getHeight());
+			c.a = 0.6f;
+			g.setColor(c);
+			g.fillRect(gc.getWidth() / 2 - 142, gc.getHeight() / 2 - 192, 
+					284, 384);
+			g.setColor(Color.white);
+			font1.drawString(gc.getWidth() / 2 - 30, gc.getHeight() / 2 - 160, 
+					"PAUSED");
+			font1.drawString(gc.getWidth() / 2 - 100, gc.getHeight() / 2 - 160 
+					+ 48, "Press \'p\' to resume.\n\nPress \'Esc\' to quit.");
+		}
 
 		// player.draw(pos.x, pos.y, 2.0f);
 	}
@@ -162,10 +178,17 @@ public class MovementTest extends BasicGame {
 		input = gc.getInput();
 		inputDelta -= delta;
 
-		if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+		//if you lose focus, pause the game
+		if(!gc.hasFocus()){
+			gc.setPaused(true);
+		}
+
+		//if press ESCAPE and the game is paused, then exit
+		if (input.isKeyPressed(Input.KEY_ESCAPE) && gc.isPaused()) {
 			gc.exit();
 		}
 
+		//pause or unpause the game
 		if (input.isKeyPressed(Input.KEY_P)) {
 			gc.setPaused(!gc.isPaused());
 		}
@@ -234,9 +257,9 @@ public class MovementTest extends BasicGame {
 
 		player.isMoving = false;
 		// update the player's position and image/animation
-		
+
 		int scale = 1;
-		if(input.isKeyDown(Input.KEY_LSHIFT) || 
+		if (input.isKeyDown(Input.KEY_LSHIFT) ||
 				input.isKeyDown(Input.KEY_RSHIFT)) {
 			scale = 3;
 		}
@@ -465,9 +488,9 @@ public class MovementTest extends BasicGame {
 						map.getObjectName(gid, oid), type);
 				// if type is "circle", make a Circle Shape
 				if (type.equals("circle")) {
-					//mapObjects.add(new Circle(x + width / 2, y + height / 2,
-					//		width / 2, 4));
-					mapObjects.add(new Ellipse(x + width / 2, y + height / 2, 
+					// mapObjects.add(new Circle(x + width / 2, y + height / 2,
+					// width / 2, 4));
+					mapObjects.add(new Ellipse(x + width / 2, y + height / 2,
 							width / 2, height / 2));
 				} else {
 					// otherwise, assume it is a Rectangle shape
@@ -485,33 +508,33 @@ public class MovementTest extends BasicGame {
 		for (Shape s : staticMapObjects.get(map)) {
 			// check if the player is colliding with the shape
 			if (s.intersects(pShape)) {
-				//TODO: smart collisions
-				//	if there is a collision, try and move the player along
-				//	the edge,
-				//  for example, colliding with a circle will move the player
-				// 	along the edge of the circle, so they aren't stuck
+				// TODO: smart collisions
+				// if there is a collision, try and move the player along
+				// the edge,
+				// for example, colliding with a circle will move the player
+				// along the edge of the circle, so they aren't stuck
 				// OR if the collision is with just 1 pixel, try to move
-				// 		slightly to the left/right/up/down 
+				// slightly to the left/right/up/down
 				Shape testShape = pShape;
-				switch(d) {
+				switch (d) {
 				case RIGHT:
 					break;
 				case LEFT:
 					break;
 				case UP:
-					//try right
+					// try right
 					testShape.setX(testShape.getX() + 1);
 					boolean blockedRight = s.intersects(testShape);
-					//testShape.setX(p)
-					//boolean blockedLeft 
-//					if(blocked) {
-//						
-//					}
+					// testShape.setX(p)
+					// boolean blockedLeft
+					// if(blocked) {
+					//
+					// }
 					break;
 				case DOWN:
 					break;
 				case NONE:
-					//error?
+					// error?
 					break;
 				}
 				return true;
