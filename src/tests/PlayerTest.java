@@ -11,11 +11,13 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
+import tools.Direction;
+
 public class PlayerTest {
 	
-	protected enum Direction {
+	/*protected enum Direction {
 		NONE, RIGHT, LEFT, UP, DOWN
-	}
+	}*/
 	
 	private Vector2f pos;
 	
@@ -100,7 +102,8 @@ public class PlayerTest {
 	
 	public void render(GameContainer gc, Graphics g) {
 		//TODO: Render images and animations
-		currImage.draw(pos.x, pos.y);
+		//currImage.draw(pos.x, pos.y);
+		g.drawImage(currImage, pos.x, pos.y);
 		//g.draw(playerShape);
 	}
 	
@@ -180,6 +183,9 @@ public class PlayerTest {
 			//pos.y += speed * (delta / 100.0f);
 			//pos.y += (speed + delta) / 100.0f;
 			pos.y += (speed + delta) / 10;
+			break;
+		default:
+			//do nothing
 			break;
 		}
 		playerShape.setLocation(pos);

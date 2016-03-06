@@ -19,7 +19,7 @@ import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.tiled.TiledMap;
 
-import tests.PlayerTest.Direction;
+import tools.Direction;
 
 public class MovementTest extends BasicGame {
 
@@ -35,7 +35,6 @@ public class MovementTest extends BasicGame {
 	int inputDelta;
 
 	Image playerImage;
-	Image map;
 	Image[] images;
 	SpriteSheet moves;
 
@@ -73,16 +72,8 @@ public class MovementTest extends BasicGame {
 		moves = new SpriteSheet("testdata/testMovement2.png",
 				TILE_SIZE, TILE_SIZE);
 		playerImage = moves.getSprite(0, 0);
-		map = new Image("testdata/testMap1.png");
 
 		mapID = new Vector2f(0, 1);
-		// TODO: remove *mapFrames* because it is not used anymore
-		mapFrames = new Image[3][3];
-		for (int k = 0; k < mapFrames.length; k++) {
-			mapFrames[k][0] = map;
-			mapFrames[k][1] = map;
-			mapFrames[k][2] = map;
-		}
 
 		// TODO: Make a loop to initialize the Tiled maps
 		int mapRows = 3;
@@ -115,11 +106,12 @@ public class MovementTest extends BasicGame {
 
 		// TiledMap map11 = new TiledMap("testdata/map1-1.tmx", "testdata");
 
+		
+
 		int x = (gc.getWidth() / 2) - (playerImage.getWidth() / 2);
 		int y = (gc.getHeight() / 2) - (playerImage.getHeight() / 2);
 		pos = new Vector2f(x, y);
 		mapPos = new Vector2f(0, 0);
-
 		player = new PlayerTest(pos, playerImage);
 	}
 
@@ -151,20 +143,20 @@ public class MovementTest extends BasicGame {
 				tiledMapArr[(int) mapID.x][(int) mapID.y].getWidth() * 32);
 
 		player.render(gc, g);
-		
-		//if paused, show a window or something
-		if(gc.isPaused()) {
+
+		// if paused, show a window or something
+		if (gc.isPaused()) {
 			Color c = new Color(0, 0, 0, 0.3f);
 			g.setColor(c);
 			g.fillRect(0, 0, gc.getWidth(), gc.getHeight());
 			c.a = 0.6f;
 			g.setColor(c);
-			g.fillRect(gc.getWidth() / 2 - 142, gc.getHeight() / 2 - 192, 
+			g.fillRect(gc.getWidth() / 2 - 142, gc.getHeight() / 2 - 192,
 					284, 384);
 			g.setColor(Color.white);
-			font1.drawString(gc.getWidth() / 2 - 30, gc.getHeight() / 2 - 160, 
+			font1.drawString(gc.getWidth() / 2 - 30, gc.getHeight() / 2 - 160,
 					"PAUSED");
-			font1.drawString(gc.getWidth() / 2 - 100, gc.getHeight() / 2 - 160 
+			font1.drawString(gc.getWidth() / 2 - 100, gc.getHeight() / 2 - 160
 					+ 48, "Press \'p\' to resume.\n\nPress \'Esc\' to quit.");
 		}
 
@@ -178,24 +170,24 @@ public class MovementTest extends BasicGame {
 		input = gc.getInput();
 		inputDelta -= delta;
 
-		//if you lose focus, pause the game
-		if(!gc.hasFocus()){
+		// if you lose focus, pause the game
+		if (!gc.hasFocus()) {
 			gc.setPaused(true);
 		}
 
-		//if you press ESCAPE...
-		if (input.isKeyPressed(Input.KEY_ESCAPE) ){
-			//if the game is not paused, then open the pause menu
-			if(!gc.isPaused()) {
+		// if you press ESCAPE...
+		if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+			// if the game is not paused, then open the pause menu
+			if (!gc.isPaused()) {
 				gc.setPaused(true);
-			} 
-			//otherwise, game is paused, so exit the game
+			}
+			// otherwise, game is paused, so exit the game
 			else {
 				gc.exit();
 			}
 		}
 
-		//pause or un-pause the game
+		// pause or un-pause the game
 		if (input.isKeyPressed(Input.KEY_P)) {
 			gc.setPaused(!gc.isPaused());
 		}
@@ -439,7 +431,8 @@ public class MovementTest extends BasicGame {
 
 	/**
 	 * TODO
-	 * Moves the map around the character
+	 * Moves the map around the character.
+	 * Useful for larger maps that can't fit on the screen.
 	 * @param input
 	 * @param delta
 	 */
