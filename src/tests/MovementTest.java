@@ -232,12 +232,6 @@ public class MovementTest extends BasicGame {
 		// TODO: Diagonals?
 		// TODO: check for boundaries
 
-		int spd = 10;
-
-		if (input.isKeyDown(Input.KEY_LSHIFT)) {
-			spd *= 3;
-		}
-
 		player.isMoving = false;
 		// update the player's position and image/animation
 		
