@@ -48,7 +48,8 @@ public class Turret {
 		this.turretImage = turretImage;
 		turretShape = new Rectangle(pos.x, pos.y, turretImage.getWidth(),
 				turretImage.getHeight());
-		fireDelta = fireDeltaMax = 2000;
+		int shots_per_sec = 1;
+		fireDelta = fireDeltaMax = 1000 / shots_per_sec;
 
 		projectiles = new ArrayList<Projectile>();
 		deadProjectiles = new ArrayList<Projectile>(4);
@@ -157,15 +158,16 @@ public class Turret {
 		}
 
 		private void setup() {
+			int width = 8;
 			// center the projectile along the y-axis
 			if (dir == Direction.RIGHT || dir == Direction.LEFT) {
-				pos.y += 15;
+				pos.y += 15 - (width / 2);
 			}
 			// center the projectile along the x-axis
 			if (dir == Direction.UP || dir == Direction.DOWN) {
-				pos.x += 15;
+				pos.x += 15 - (width / 2);
 			}
-			shape = new Circle(pos.x, pos.y, 4);
+			shape = new Circle(pos.x, pos.y, 8);
 		}
 
 		private void render(GameContainer gc, Graphics g) {
