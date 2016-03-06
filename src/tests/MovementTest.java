@@ -240,6 +240,12 @@ public class MovementTest extends BasicGame {
 
 		player.isMoving = false;
 		// update the player's position and image/animation
+		
+		int scale = 1;
+		if(input.isKeyDown(Input.KEY_LSHIFT) || 
+				input.isKeyDown(Input.KEY_RSHIFT)) {
+			scale = 3;
+		}
 
 		if (input.isKeyDown(Input.KEY_RIGHT)) {
 			// moving = true;
@@ -252,7 +258,7 @@ public class MovementTest extends BasicGame {
 			 * are not needed.
 			 * Again, it's a consideration to be made at some point
 			 */
-			player.update(Direction.RIGHT, gc, input, delta);
+			player.update(Direction.RIGHT, gc, input, scale * delta);
 			// update the player's position and image/animation
 			// player.update(gc, input, delta);
 			// pos.x += spd * delta / 100;
@@ -268,7 +274,7 @@ public class MovementTest extends BasicGame {
 				} else {
 					// no more maps to the right, so collide & stay on screen
 					// pos.x -= spd * delta / 100;
-					player.move(Direction.LEFT, delta);
+					player.move(Direction.LEFT, scale * delta);
 
 				}
 
@@ -289,14 +295,14 @@ public class MovementTest extends BasicGame {
 					Direction.RIGHT)) {
 				// check if the player is colliding with any static map objects
 				// if they do, then undo the movement
-				player.move(Direction.LEFT, delta);
+				player.move(Direction.LEFT, scale * delta);
 
 			}
 
 		}
 		if (input.isKeyDown(Input.KEY_LEFT)) {
 			player.isMoving = true;
-			player.update(Direction.LEFT, gc, input, delta);
+			player.update(Direction.LEFT, gc, input, scale * delta);
 			// check if the player collided with the left "wall"
 			if (player.getX() + player.getOffset() <= 0) {
 				if (mapID.x > 0) {
@@ -304,13 +310,13 @@ public class MovementTest extends BasicGame {
 					player.setX(tiledMapArr[(int) mapID.x][(int) mapID.y]
 							.getWidth() - 3 * player.getOffset());
 				} else
-					player.move(Direction.RIGHT, delta);
+					player.move(Direction.RIGHT, scale * delta);
 			} else if (isBlocked(player,
 					tiledMapArr[(int) mapID.x][(int) mapID.y],
 					Direction.LEFT)) {
 				// check if the player is colliding with any static map objects
 				// if they do, then undo the movement
-				player.move(Direction.RIGHT, delta);
+				player.move(Direction.RIGHT, scale * delta);
 
 			}
 
@@ -330,7 +336,7 @@ public class MovementTest extends BasicGame {
 		}
 		if (input.isKeyDown(Input.KEY_UP)) {
 			player.isMoving = true;
-			player.update(Direction.UP, gc, input, delta);
+			player.update(Direction.UP, gc, input, scale * delta);
 			// check if the player collided with the top "wall"
 			if (player.getY() + player.getOffset() <= 0) {
 				if (mapID.y > 0) {
@@ -339,14 +345,14 @@ public class MovementTest extends BasicGame {
 							.getHeight() * TILE_SIZE
 							- 3 * player.getOffset());
 				} else {
-					player.move(Direction.DOWN, delta);
+					player.move(Direction.DOWN, scale * delta);
 				}
 			} else if (isBlocked(player,
 					tiledMapArr[(int) mapID.x][(int) mapID.y],
 					Direction.UP)) {
 				// check if the player is colliding with any static map objects
 				// if they do, then undo the movement
-				player.move(Direction.DOWN, delta);
+				player.move(Direction.DOWN, scale * delta);
 
 			}
 
@@ -367,7 +373,7 @@ public class MovementTest extends BasicGame {
 		}
 		if (input.isKeyDown(Input.KEY_DOWN)) {
 			player.isMoving = true;
-			player.update(Direction.DOWN, gc, input, delta);
+			player.update(Direction.DOWN, gc, input, scale * delta);
 			// check if the player collided with the bottom "wall"
 			if (player.getY() + 3 * player.getOffset() > tiledMapArr[(int) mapID.x][(int) mapID.y]
 					.getHeight()
@@ -376,14 +382,14 @@ public class MovementTest extends BasicGame {
 					mapID.y++;
 					pos.y = -(partPlayer(4, playerImage));
 				} else {
-					player.move(Direction.UP, delta);
+					player.move(Direction.UP, scale * delta);
 				}
 			} else if (isBlocked(player,
 					tiledMapArr[(int) mapID.x][(int) mapID.y],
 					Direction.DOWN)) {
 				// check if the player is colliding with any static map objects
 				// if they do, then undo the movement
-				player.move(Direction.UP, delta);
+				player.move(Direction.UP, scale * delta);
 
 			}
 
@@ -402,7 +408,7 @@ public class MovementTest extends BasicGame {
 		}
 
 		if (!player.isMoving)
-			player.update(Direction.NONE, gc, input, delta);
+			player.update(Direction.NONE, gc, input, scale * delta);
 		// playerImage = moves.getSprite(0, 0);
 
 	}
@@ -480,10 +486,40 @@ public class MovementTest extends BasicGame {
 
 	private boolean isBlocked(PlayerTest p, TiledMap map, Direction d) {
 
+		Shape pShape = p.getShape();
 		// for all static objects in the current map
 		for (Shape s : staticMapObjects.get(map)) {
 			// check if the player is colliding with the shape
-			if (s.intersects(p.getShape())) {
+			if (s.intersects(pShape)) {
+				//TODO: smart collisions
+				//	if there is a collision, try and move the player along
+				//	the edge,
+				//  for example, colliding with a circle will move the player
+				// 	along the edge of the circle, so they aren't stuck
+				// OR if the collision is with just 1 pixel, try to move
+				// 		slightly to the left/right/up/down 
+				Shape testShape = pShape;
+				switch(d) {
+				case RIGHT:
+					break;
+				case LEFT:
+					break;
+				case UP:
+					//try right
+					testShape.setX(testShape.getX() + 1);
+					boolean blockedRight = s.intersects(testShape);
+					//testShape.setX(p)
+					//boolean blockedLeft 
+//					if(blocked) {
+//						
+//					}
+					break;
+				case DOWN:
+					break;
+				case NONE:
+					//error?
+					break;
+				}
 				return true;
 			}
 		}
