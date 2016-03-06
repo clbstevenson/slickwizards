@@ -7,6 +7,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
@@ -50,6 +51,7 @@ public class Turret {
 		fireDelta = fireDeltaMax = 2000;
 
 		projectiles = new ArrayList<Projectile>();
+		deadProjectiles = new ArrayList<Projectile>(4);
 	}
 
 	public Vector2f getPos() {
@@ -71,19 +73,18 @@ public class Turret {
 	public Shape getShape() {
 		return turretShape;
 	}
-	
-	
-	//fire a new projectile
+
+	// fire a new projectile
 	private void fire() {
-		//create a new projectile
-		//TODO: use an image (based on turret type? or projectile type?)
+		// create a new projectile
+		// TODO: use an image (based on turret type? or projectile type?)
 		Projectile p = new Projectile(pos, dir);
 		projectiles.add(p);
 	}
 
 	public void render(GameContainer gc, Graphics g) {
 		// TODO render images, and render images for each projectile
-		for(Projectile p: projectiles)
+		for (Projectile p : projectiles)
 			p.render(gc, g);
 		g.drawImage(turretImage, pos.x, pos.y);
 	}
@@ -99,56 +100,80 @@ public class Turret {
 			// reset fireDelta to the max value
 			fireDelta = fireDeltaMax;
 		}
-		
-		//attempt to update all of the currently fired projectiles
-		for(Projectile p: projectiles) {
-			//if the projectile is not done moving, update it
-			if(p.dir != Direction.NONE)
+
+		// attempt to update all of the currently fired projectiles
+		for (Projectile p : projectiles) {
+			// if the projectile is not done moving, update it
+			if (p.dir != Direction.NONE)
 				p.update(gc, delta);
 			else
-				//otherwise, it is now "dead"
+				// otherwise, it is now "dead"
 				deadProjectiles.add(p);
 		}
-		//remove from the projectiles arraylist all of the "dead" projectiles
+		// remove from the projectiles arraylist all of the "dead" projectiles
 		projectiles.removeAll(deadProjectiles);
-		//remove all of the dead projectiles from the list
+		// remove all of the dead projectiles from the list
 		deadProjectiles.clear();
-			
+
 	}
 
 	private class Projectile {
 		Vector2f pos;
 		Direction dir;
 		float speed;
-		
+
 		int lifetime;
+		float dist, distMoved; // distance in tiles?
 
 		// TODO: have projectile types
 		// TODO: have an animation
 		Image pImage;
+		Shape shape;
 
 		private Projectile(Vector2f initPos, Direction initDir) {
-			pos = initPos;
+			pos = initPos.copy();
 			dir = initDir;
 			pImage = null;
 			speed = 1;
 			lifetime = 1000;
+			dist = 5 * 32;
+			distMoved = 0;
+
+			setup();
 		}
 
-		private Projectile(Vector2f initPos, Direction initDir, Image initImage,
-				float initSpeed, int initLifetime) {
-			pos = initPos;
+		private Projectile(Vector2f initPos, Direction initDir,
+				Image initImage,
+				float initSpeed, int initLifetime, float initDist) {
+			pos = initPos.copy();
 			dir = initDir;
 			this.pImage = initImage;
 			speed = initSpeed;
 			lifetime = initLifetime;
+			dist = initDist * 32;
+			distMoved = 0;
+			
+			setup();
+		}
+
+		private void setup() {
+			// center the projectile along the y-axis
+			if (dir == Direction.RIGHT || dir == Direction.LEFT) {
+				pos.y += 15;
+			}
+			// center the projectile along the x-axis
+			if (dir == Direction.UP || dir == Direction.DOWN) {
+				pos.x += 15;
+			}
+			shape = new Circle(pos.x, pos.y, 4);
 		}
 
 		private void render(GameContainer gc, Graphics g) {
 			if (pImage == null) {
 				Color c = g.getColor();
 				g.setColor(Color.orange);
-				g.fillOval(pos.x, pos.y, 4, 4);
+//				g.fillOval(pos.x, pos.y, 4, 4);
+				g.fill(shape);
 				g.setColor(c);
 			} else {
 				g.drawImage(pImage, pos.x, pos.y);
@@ -158,9 +183,14 @@ public class Turret {
 
 		private void update(GameContainer gc, int delta) {
 			lifetime -= delta;
-			if(lifetime <= 0) 
+			// if(lifetime <= 0)
+			// dir = Direction.NONE;
+
+			distMoved += (speed + delta) / 10;
+			if (distMoved >= dist) {
 				dir = Direction.NONE;
-			
+			}
+
 			switch (dir) {
 			case RIGHT:
 				pos.x += (speed + delta) / 10;
@@ -181,6 +211,7 @@ public class Turret {
 				// don't move
 				break;
 			}
+			shape.setLocation(pos);
 		}
 	}
 

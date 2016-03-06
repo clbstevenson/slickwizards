@@ -27,7 +27,7 @@ public class PlayerTest {
 	Animation playerAnim;
 	boolean isMoving;
 	
-	int speed;
+	float speed;
 
 	public PlayerTest(Image playerImage) throws SlickException{
 		this(new Vector2f(0.0f, 0.0f), playerImage);

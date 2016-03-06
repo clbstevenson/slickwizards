@@ -43,9 +43,8 @@ public class MovementTest extends BasicGame {
 	// > actually, "map" objects better so can interact different
 	// > for now: test with images
 
-	// TODO: remove *mapFrames* because it is not used anymore
-	Image[][] mapFrames;
-	// TODO: Make the 2D array hold TilED maps
+	// TODO: make another class that implements TiledMap
+	// - this would help for certain items, creatures, etc to be loaded
 	TiledMap[][] tiledMapArr;
 	// ArrayList<Shape>[][] staticMapObjects;
 	HashMap<TiledMap, ArrayList<Shape>> staticMapObjects;
@@ -54,6 +53,8 @@ public class MovementTest extends BasicGame {
 	Vector2f mapPos;
 
 	PlayerTest player;
+
+	Turret testTurret;
 
 	public MovementTest(String title) {
 		super(title);
@@ -106,13 +107,16 @@ public class MovementTest extends BasicGame {
 
 		// TiledMap map11 = new TiledMap("testdata/map1-1.tmx", "testdata");
 
-		
-
 		int x = (gc.getWidth() / 2) - (playerImage.getWidth() / 2);
 		int y = (gc.getHeight() / 2) - (playerImage.getHeight() / 2);
 		pos = new Vector2f(x, y);
 		mapPos = new Vector2f(0, 0);
 		player = new PlayerTest(pos, playerImage);
+
+		Image testTurretImage = new Image("testdata/test-turret.png");
+		testTurret = new Turret(new Vector2f(gc.getWidth() - 64,
+				gc.getHeight() - 64), Direction.LEFT, testTurretImage);
+
 	}
 
 	@Override
@@ -121,6 +125,9 @@ public class MovementTest extends BasicGame {
 		// draws the current map
 		// mapFrames[(int) mapID.x][(int) mapID.y].draw(0, 0);
 		tiledMapArr[(int) mapID.x][(int) mapID.y].render(0, 0);
+		if(mapID.x == 0 && mapID.y == 1) {
+			testTurret.render(gc, g);
+		}
 
 		for (Shape s : staticMapObjects
 				.get(tiledMapArr[(int) mapID.x][(int) mapID.y]))
@@ -165,7 +172,6 @@ public class MovementTest extends BasicGame {
 
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
-		// TODO Auto-generated method stub
 
 		input = gc.getInput();
 		inputDelta -= delta;
@@ -192,6 +198,11 @@ public class MovementTest extends BasicGame {
 			gc.setPaused(!gc.isPaused());
 		}
 
+		if(mapID.x == 0 && mapID.y == 1) {
+			testTurret.update(gc, input, delta);
+		}
+
+		
 		// TODO: Diagonals??
 		// movementOne(input, delta);
 		// movementTwo(input, delta);
@@ -430,7 +441,7 @@ public class MovementTest extends BasicGame {
 	}
 
 	/**
-	 * TODO
+	 * TODO move the map around the character 
 	 * Moves the map around the character.
 	 * Useful for larger maps that can't fit on the screen.
 	 * @param input
