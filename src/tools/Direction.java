@@ -2,5 +2,5 @@ package tools;
 
 public enum Direction {
 
-	NONE, LEFT, RIGHT, UP, DOWN;
+	NONE, WEST, EAST, NORTH, SOUTH, NW, SW, SE, NE;
 }

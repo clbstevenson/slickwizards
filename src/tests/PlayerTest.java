@@ -85,16 +85,16 @@ public class PlayerTest {
 		case NONE:
 			currImage = playerSheet.getSprite(0,0);
 			break;
-		case RIGHT:
+		case EAST:
 			currImage = playerSheet.getSprite(2, 1);
 			break;
-		case LEFT:
+		case WEST:
 			currImage = playerSheet.getSprite(1, 1);
 			break;
-		case UP:
+		case NORTH:
 			currImage = playerSheet.getSprite(3, 1);
 			break;
-		case DOWN:
+		case SOUTH:
 			currImage = playerSheet.getSprite(0, 1);
 			break;
 		}
@@ -161,24 +161,24 @@ public class PlayerTest {
 		//System.out.println("ratio = " + (speed + delta) / 10);
 		//System.out.println("delta = " + delta);
 		switch(dir) {
-		case RIGHT:
+		case EAST:
 			//move right
 			//pos.x += speed * delta / 100;
 			pos.x += (speed + delta) / 10;
 			break;
-		case LEFT:
+		case WEST:
 			//move left
 			//pos.x -= speed * (delta / 100.0f);
 			//pos.x -= (speed + delta) / 100.0f;
 			pos.x -= (speed + delta) / 10;
 			break;
-		case UP:
+		case NORTH:
 			//move up
 			//pos.y -= speed * (delta / 100.0f);
 			//pos.y -= (speed + delta) / 100.0f;
 			pos.y -= (speed + delta) / 10;
 			break;
-		case DOWN:
+		case SOUTH:
 			//move down
 			//pos.y += speed * (delta / 100.0f);
 			//pos.y += (speed + delta) / 100.0f;

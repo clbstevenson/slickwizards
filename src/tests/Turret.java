@@ -39,7 +39,7 @@ public class Turret {
 	ArrayList<Projectile> deadProjectiles;
 
 	public Turret(Image turretImage) {
-		this(new Vector2f(0.0f, 0.0f), Direction.RIGHT, turretImage);
+		this(new Vector2f(0.0f, 0.0f), Direction.EAST, turretImage);
 	}
 
 	public Turret(Vector2f initPos, Direction initDir, Image turretImage) {
@@ -166,22 +166,22 @@ public class Turret {
 			int width = 8;
 			// center the projectile along the y-axis
 			switch(dir) {
-			case RIGHT:
+			case EAST:
 				//pos.y += (pImage.getWidth() / 2) - (width / 2);
 				pos.y += (32 / 2) - (width / 2);
 				pos.x -= (width / 2);
 				break;
-			case LEFT:
+			case WEST:
 				//pos.y += (pImage.getWidth() / 2) - (width / 2);
 				pos.y += (32 / 2) - (width / 2);
 				pos.x += (width / 2);
 				break;
-			case UP:
+			case NORTH:
 				//pos.x += (pImage.getHeight() / 2) - (width / 2);
 				pos.x += (32 / 2) - (width / 2);
 				pos.y -= (width / 2);
 				break;
-			case DOWN:
+			case SOUTH:
 				//pos.x += (pImage.getHeight() / 2) - (width / 2);
 				pos.x += (32 / 2) - (width / 2);
 				pos.y += (width / 2);
@@ -236,16 +236,16 @@ public class Turret {
 			}
 
 			switch (dir) {
-			case RIGHT:
+			case EAST:
 				pos.x += (speed + delta) / 10;
 				break;
-			case LEFT:
+			case WEST:
 				pos.x -= (speed + delta) / 10;
 				break;
-			case UP:
+			case NORTH:
 				pos.y -= (speed + delta) / 10;
 				break;
-			case DOWN:
+			case SOUTH:
 				pos.y += (speed + delta) / 10;
 				break;
 			case NONE:
