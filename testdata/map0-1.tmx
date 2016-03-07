@@ -6,9 +6,24 @@
  <tileset firstgid="2" name="testMap1" tilewidth="32" tileheight="32">
   <image source="testMap1.png" width="640" height="480"/>
  </tileset>
+ <tileset firstgid="302" name="test-turret-left" tilewidth="32" tileheight="32">
+  <image source="test-turret-left.png" width="32" height="32"/>
+ </tileset>
  <layer name="Tile Layer 1" width="20" height="15">
   <data encoding="base64" compression="gzip">
    H4sIAAAAAAAAC2NiYGBgGsVUxYxoGJs8qebh0ztqHv3No2b8jmLiMQAuq1uYsAQAAA==
   </data>
  </layer>
+ <objectgroup name="turretLayer" width="20" height="15">
+  <object type="test-turret-left" gid="302" x="512" y="64" width="32" height="32">
+   <properties>
+    <property name="image" value="testdata/test-turret-left.png"/>
+   </properties>
+  </object>
+  <object type="test-turret-left" gid="302" x="512" y="448" width="32" height="32">
+   <properties>
+    <property name="image" value="testdata/test-turret-left.png"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

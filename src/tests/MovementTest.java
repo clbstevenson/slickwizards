@@ -24,7 +24,8 @@ import tools.Direction;
 
 public class MovementTest extends BasicGame {
 
-	private static float version = 1.3f;
+	//private static float version = 0.1.4f;
+	private static String version = "0.1.4";
 	private static String title = "Test Game - v" + version;
 	private static final int TILE_SIZE = 32;
 
@@ -49,13 +50,14 @@ public class MovementTest extends BasicGame {
 	TiledMap[][] tiledMapArr;
 	// ArrayList<Shape>[][] staticMapObjects;
 	HashMap<TiledMap, ArrayList<Shape>> staticMapObjects;
+	HashMap<TiledMap, ArrayList<Turret>> staticMapTurrets;
 	Vector2f mapID;
 	Vector2f pos;
 	Vector2f mapPos;
 
 	PlayerTest player;
 
-	Turret testTurret;
+	// Turret testTurret;
 
 	public MovementTest(String title) {
 		super(title);
@@ -83,6 +85,8 @@ public class MovementTest extends BasicGame {
 		// initialize a Hashmap that connects each TiledMap to array of Shapes
 		staticMapObjects = new
 				HashMap<TiledMap, ArrayList<Shape>>(mapRows * mapCols);
+		staticMapTurrets =
+				new HashMap<TiledMap, ArrayList<Turret>>(mapRows * mapCols / 4);
 		// Initialize all of the maps in the array (each one is like a "scene")
 		tiledMapArr = new TiledMap[mapCols][mapRows];
 		tiledMapArr[0][0] = new TiledMap("testdata/map0-0.tmx", "testdata");
@@ -115,8 +119,8 @@ public class MovementTest extends BasicGame {
 		player = new PlayerTest(pos, playerImage);
 
 		Image testTurretImage = new Image("testdata/test-turret-left.png");
-		testTurret = new Turret(new Vector2f(gc.getWidth() - 64,
-				gc.getHeight() - 64), Direction.WEST, testTurretImage);
+		// testTurret = new Turret(new Vector2f(gc.getWidth() - 64,
+		// gc.getHeight() - 64), Direction.WEST, testTurretImage);
 
 	}
 
@@ -126,13 +130,18 @@ public class MovementTest extends BasicGame {
 		// draws the current map
 		// mapFrames[(int) mapID.x][(int) mapID.y].draw(0, 0);
 		tiledMapArr[(int) mapID.x][(int) mapID.y].render(0, 0);
-		if(mapID.x == 0 && mapID.y == 1) {
-			testTurret.render(gc, g);
-		}
+		// if (mapID.x == 0 && mapID.y == 1) {
+		// testTurret.render(gc, g);
+		// }
 
 		for (Shape s : staticMapObjects
 				.get(tiledMapArr[(int) mapID.x][(int) mapID.y]))
 			g.draw(s);
+
+		for (Turret t : staticMapTurrets
+				.get(tiledMapArr[(int) mapID.x][(int) mapID.y]))
+			t.render(gc, g);
+
 		// playerImage.draw(pos.x, pos.y);
 
 		g.drawString((int) mapID.x + ", " + (int) mapID.y, gc.getWidth() - 64,
@@ -193,8 +202,8 @@ public class MovementTest extends BasicGame {
 				gc.exit();
 			}
 		}
-		
-		if(input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
+
+		if (input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
 			gc.setPaused(!gc.isPaused());
 		}
 
@@ -203,11 +212,13 @@ public class MovementTest extends BasicGame {
 			gc.setPaused(!gc.isPaused());
 		}
 
-		if(mapID.x == 0 && mapID.y == 1) {
-			testTurret.update(gc, input, delta);
-		}
+		// if (mapID.x == 0 && mapID.y == 1) {
+		// testTurret.update(gc, input, delta);
+		// }
+		for (Turret t : staticMapTurrets
+				.get(tiledMapArr[(int) mapID.x][(int) mapID.y]))
+			t.update(gc, input, delta);
 
-		
 		// TODO: Diagonals??
 		// movementOne(input, delta);
 		// movementTwo(input, delta);
@@ -272,12 +283,12 @@ public class MovementTest extends BasicGame {
 
 		player.isMoving = false;
 		// update the player's position and image/animation
-		
-		//check if the player collides with any of the current projectiles
-		if (hitProjectile(player, 
+
+		// check if the player collides with any of the current projectiles
+		if (hitProjectile(player,
 				tiledMapArr[(int) mapID.x][(int) mapID.y])) {
-			//if they do, don't undo movement
-			//but, take damage or something?
+			// if they do, don't undo movement
+			// but, take damage or something?
 			System.out.println("HIT");
 		}
 
@@ -431,7 +442,7 @@ public class MovementTest extends BasicGame {
 				// if they do, then undo the movement
 				player.move(Direction.NORTH, scale * delta);
 
-			} 
+			}
 
 			/*
 			 * if (pos.y + 3 * partPlayer(4, playerImage) > tiledMapArr[(int)
@@ -491,11 +502,12 @@ public class MovementTest extends BasicGame {
 			playerImage = moves.getSprite(0, 0);
 	}
 
-	private void loadMapObjects(TiledMap map) {
+	private void loadMapObjects(TiledMap map) throws SlickException {
 
 		int objectGroupCount = map.getObjectGroupCount();
 		// create an ArrayList to fill with a Shape for each object on the map
-		ArrayList<Shape> mapObjects = new ArrayList<>();
+		ArrayList<Shape> mapObjects = new ArrayList<Shape>();
+		ArrayList<Turret> mapTurrets = new ArrayList<Turret>();
 		// loop through all of the object layers
 		for (int gid = 0; gid < objectGroupCount; gid++) {
 			System.out.printf("Object Group: %d\n", objectGroupCount);
@@ -516,13 +528,27 @@ public class MovementTest extends BasicGame {
 					// width / 2, 4));
 					mapObjects.add(new Ellipse(x + width / 2, y + height / 2,
 							width / 2, height / 2));
+				} else if (type.equals("test-turret-left")) {
+					// create a new Turret object
+					String s = map.getObjectImage(gid, oid);
+					String imagePath = map.getObjectProperty(gid, oid, "image",
+							"testdata/error-tile.png");
+					System.out.printf("object image: %s;  path: %s\n",
+							s, imagePath);
+					Image turretImage = new Image(imagePath);
+					// Image turretImage = new Image(map.getObjectImage(gid,
+					// oid));
+					mapTurrets.add(new Turret(new Vector2f(x, y),
+							Direction.WEST,
+							turretImage));
 				} else {
-					// otherwise, assume it is a Rectangle shape
+					// otherwise, assume it is a simple Rectangle shape
 					mapObjects.add(new Rectangle(x, y, width, height));
 				}
 			}
 		}
 		staticMapObjects.put(map, mapObjects);
+		staticMapTurrets.put(map, mapTurrets);
 	}
 
 	private boolean isBlocked(PlayerTest p, TiledMap map, Direction d) {
@@ -567,13 +593,15 @@ public class MovementTest extends BasicGame {
 
 		return false;
 	}
-	
+
 	private boolean hitProjectile(PlayerTest p, TiledMap map) {
 		Shape pShape = p.getShape();
-		for(Projectile proj : testTurret.getProjectiles()) {
-			if(proj.getShape().intersects(pShape)) {
-				proj.setDir(Direction.NONE);
-				return true;
+		for (Turret t : staticMapTurrets.get(map)) {
+			for (Projectile proj : t.getProjectiles()) {
+				if (proj.getShape().intersects(pShape)) {
+					proj.setDir(Direction.NONE);
+					return true;
+				}
 			}
 		}
 		return false;
