@@ -19,6 +19,7 @@ import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.tiled.TiledMap;
 
+import tests.Turret.Projectile;
 import tools.Direction;
 
 public class MovementTest extends BasicGame {
@@ -113,7 +114,7 @@ public class MovementTest extends BasicGame {
 		mapPos = new Vector2f(0, 0);
 		player = new PlayerTest(pos, playerImage);
 
-		Image testTurretImage = new Image("testdata/test-turret.png");
+		Image testTurretImage = new Image("testdata/test-turret-left.png");
 		testTurret = new Turret(new Vector2f(gc.getWidth() - 64,
 				gc.getHeight() - 64), Direction.LEFT, testTurretImage);
 
@@ -192,6 +193,10 @@ public class MovementTest extends BasicGame {
 				gc.exit();
 			}
 		}
+		
+		if(input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
+			gc.setPaused(!gc.isPaused());
+		}
 
 		// pause or un-pause the game
 		if (input.isKeyPressed(Input.KEY_P)) {
@@ -267,6 +272,14 @@ public class MovementTest extends BasicGame {
 
 		player.isMoving = false;
 		// update the player's position and image/animation
+		
+		//check if the player collides with any of the current projectiles
+		if (hitProjectile(player, 
+				tiledMapArr[(int) mapID.x][(int) mapID.y])) {
+			//if they do, don't undo movement
+			//but, take damage or something?
+			System.out.println("HIT");
+		}
 
 		int scale = 1;
 		if (input.isKeyDown(Input.KEY_LSHIFT) ||
@@ -418,7 +431,7 @@ public class MovementTest extends BasicGame {
 				// if they do, then undo the movement
 				player.move(Direction.UP, scale * delta);
 
-			}
+			} 
 
 			/*
 			 * if (pos.y + 3 * partPlayer(4, playerImage) > tiledMapArr[(int)
@@ -552,6 +565,17 @@ public class MovementTest extends BasicGame {
 			}
 		}
 
+		return false;
+	}
+	
+	private boolean hitProjectile(PlayerTest p, TiledMap map) {
+		Shape pShape = p.getShape();
+		for(Projectile proj : testTurret.getProjectiles()) {
+			if(proj.getShape().intersects(pShape)) {
+				proj.setDir(Direction.NONE);
+				return true;
+			}
+		}
 		return false;
 	}
 

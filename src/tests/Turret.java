@@ -88,6 +88,7 @@ public class Turret {
 		for (Projectile p : projectiles)
 			p.render(gc, g);
 		g.drawImage(turretImage, pos.x, pos.y);
+		g.draw(turretShape);
 	}
 
 	public void update(GameContainer gc, Input input, int delta) {
@@ -118,7 +119,11 @@ public class Turret {
 
 	}
 
-	private class Projectile {
+	public ArrayList<Projectile> getProjectiles() {
+		return projectiles;
+	}
+
+	protected class Projectile {
 		Vector2f pos;
 		Direction dir;
 		float speed;
@@ -129,7 +134,7 @@ public class Turret {
 		// TODO: have projectile types
 		// TODO: have an animation
 		Image pImage;
-		Shape shape;
+		Shape projShape;
 
 		private Projectile(Vector2f initPos, Direction initDir) {
 			pos = initPos.copy();
@@ -153,29 +158,58 @@ public class Turret {
 			lifetime = initLifetime;
 			dist = initDist * 32;
 			distMoved = 0;
-			
+
 			setup();
 		}
 
 		private void setup() {
 			int width = 8;
 			// center the projectile along the y-axis
-			if (dir == Direction.RIGHT || dir == Direction.LEFT) {
-				pos.y += 15 - (width / 2);
+			switch(dir) {
+			case RIGHT:
+				//pos.y += (pImage.getWidth() / 2) - (width / 2);
+				pos.y += (32 / 2) - (width / 2);
+				pos.x -= (width / 2);
+				break;
+			case LEFT:
+				//pos.y += (pImage.getWidth() / 2) - (width / 2);
+				pos.y += (32 / 2) - (width / 2);
+				pos.x += (width / 2);
+				break;
+			case UP:
+				//pos.x += (pImage.getHeight() / 2) - (width / 2);
+				pos.x += (32 / 2) - (width / 2);
+				pos.y -= (width / 2);
+				break;
+			case DOWN:
+				//pos.x += (pImage.getHeight() / 2) - (width / 2);
+				pos.x += (32 / 2) - (width / 2);
+				pos.y += (width / 2);
+				break;
+			default:
+				break;
 			}
-			// center the projectile along the x-axis
-			if (dir == Direction.UP || dir == Direction.DOWN) {
-				pos.x += 15 - (width / 2);
-			}
-			shape = new Circle(pos.x, pos.y, 8);
+			projShape = new Circle(pos.x, pos.y, 2);
+		}
+
+		protected Shape getShape() {
+			return projShape;
+		}
+
+		protected Direction getDir() {
+			return dir;
+		}
+
+		protected void setDir(Direction newdir) {
+			dir = newdir;
 		}
 
 		private void render(GameContainer gc, Graphics g) {
 			if (pImage == null) {
 				Color c = g.getColor();
 				g.setColor(Color.orange);
-//				g.fillOval(pos.x, pos.y, 4, 4);
-				g.fill(shape);
+				// g.fillOval(pos.x, pos.y, 4, 4);
+				g.fill(projShape);
 				g.setColor(c);
 			} else {
 				g.drawImage(pImage, pos.x, pos.y);
@@ -190,6 +224,14 @@ public class Turret {
 
 			distMoved += (speed + delta) / 10;
 			if (distMoved >= dist) {
+				dir = Direction.NONE;
+			}
+			
+			//if the projectile goes off the screen, destroy
+			//TODO: possible change if projectiles are removed
+			//		- some may loop back?
+			if(pos.x < 0 || pos.x >= gc.getWidth() ||
+					pos.y < 0 || pos.y >= gc.getHeight()) {
 				dir = Direction.NONE;
 			}
 
@@ -213,8 +255,9 @@ public class Turret {
 				// don't move
 				break;
 			}
-			shape.setLocation(pos);
+			projShape.setLocation(pos);
 		}
+
 	}
 
 }
